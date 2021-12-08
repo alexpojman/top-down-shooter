@@ -3,6 +3,8 @@ class_name Player
 
 # Signals
 signal player_died(position)
+signal player_health_change(value)
+signal money_change(value)
 
 # Preloads
 var recoverable_remains = preload("res://src/Actors/RecoverableRemains/RecoverableRemains.tscn")
@@ -22,6 +24,8 @@ func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 	start_position = get_parent().get_node("PlayerStartPosition").position
 	position = start_position
+
+	emit_signal("player_health_change", current_health)
 
 func _process(_delta: float) -> void:
 	$Reticle.global_position = get_global_mouse_position()
@@ -54,8 +58,16 @@ func _physics_process(_delta: float) -> void:
 func damage(amount: int) -> int:
 	current_health -= amount
 
+	emit_signal("player_health_change", current_health)
+
 	if (current_health <= 0):
 		die()
+
+	return current_health
+
+func set_health(amount: int) -> int:
+	current_health = amount
+	emit_signal("player_health_change", current_health)
 
 	return current_health
 
@@ -66,12 +78,12 @@ func die() -> void:
 
 func add_money(amount: int) -> void:
 	current_money += amount
-	print("Current money: %d" % current_money)
+	emit_signal("money_change", current_money)
 
 func respawn() -> void:
 	var death_position = position
 	position = start_position
-	current_health = max_health
+	set_health(max_health)
 
 	remove_existing_remains()
 	
@@ -82,6 +94,7 @@ func respawn() -> void:
 	remains.connect("remains_collected", self, "_on_RecoverableRemains_remains_collected")
 
 	current_money = 0
+	emit_signal("money_change", current_money)
 
 
 func _on_RecoverableRemains_remains_collected(amount: int) -> void:

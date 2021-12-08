@@ -1,5 +1,7 @@
 extends KinematicBody2D
 
+var coin_pickup = preload("res://src/Actors/CoinPickup/CoinPickup.tscn")
+
 export var move_speed: int = 100
 export var damage_amount: int = 2;
 
@@ -33,3 +35,9 @@ func _on_Hitbox_body_entered(body: Node) -> void:
 	if (body.is_in_group("Player")):
 		var player = body as Player
 		player.damage(damage_amount)
+
+func die() -> void:
+	var coin_instance = coin_pickup.instance()
+	get_tree().get_root().add_child(coin_instance)
+	coin_instance.position = position
+	queue_free()

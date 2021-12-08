@@ -7,7 +7,7 @@ signal remains_collected(amount);
 
 # Variables
 var timer
-var recoverable_amount: int = 1000
+var recoverable_amount: int = 0
 
 
 # Called when the node enters the scene tree for the first time.

@@ -13,6 +13,5 @@ func _physics_process(delta: float) -> void:
 
 func _on_Bullet_body_entered(body: Node) -> void:
 	if (body.is_in_group("Enemy")):
-		print("We hit an enemy")
-		body.queue_free()
+		body.die()
 		queue_free()

@@ -23,8 +23,10 @@ func _ready() -> void:
 	start_position = get_parent().get_node("PlayerStartPosition").position
 	position = start_position
 
-func _physics_process(_delta: float) -> void:
+func _process(_delta: float) -> void:
 	$Reticle.global_position = get_global_mouse_position()
+
+func _physics_process(_delta: float) -> void:
 	
 	var input_vector = Vector2.ZERO
 	var speed = move_speed
@@ -76,7 +78,10 @@ func respawn() -> void:
 	var remains = recoverable_remains.instance()
 	remains.position = death_position
 	get_tree().get_root().call_deferred("add_child", remains)
+	remains.recoverable_amount = current_money
 	remains.connect("remains_collected", self, "_on_RecoverableRemains_remains_collected")
+
+	current_money = 0
 
 
 func _on_RecoverableRemains_remains_collected(amount: int) -> void:
